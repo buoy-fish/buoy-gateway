@@ -24,7 +24,10 @@ jobs:
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
           df -h /
 
-      - uses: docker/setup-qemu-action@v3
+      - name: Install qemu-user-static (arm64 chroot support)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y qemu-user-static binfmt-support
 
       - name: Clone pi-gen at pinned ref
         run: |
