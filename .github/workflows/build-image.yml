@@ -48,6 +48,7 @@ jobs:
 
       - name: Checksum
         run: |
+          sudo chown -R "$(id -u):$(id -g)" pi-gen/deploy
           ls -la pi-gen/deploy
           cd pi-gen/deploy && sha256sum ./*.img.xz > SHA256SUMS
 
