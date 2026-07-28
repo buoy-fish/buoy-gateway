@@ -1,0 +1,5 @@
+IMG_SUFFIX=""
+if [ "${NOOBS}" = "1" ]; then
+	NOOBS_NAME="Buoy Gateway"
+	NOOBS_DESCRIPTION="buoy.fish LoRaWAN gateway (canary channel)"
+fi

@@ -1,0 +1,33 @@
+# Validated on canary hardware 2026-07-28. rak_2287 model preset: reset via
+# gpiochip0 pin 17 — no overrides needed. Gateway ID comes from SX1302 silicon.
+# Channel plan == the fleet's US915 sub-band 2 (replicates the balena-era
+# global_conf.json bit-for-bit).
+[concentratord]
+  log_level="INFO"
+  log_to_syslog=false
+  stats_interval="30s"
+
+  [concentratord.api]
+    event_bind="ipc:///ipc/concentratord_event"
+    command_bind="ipc:///ipc/concentratord_command"
+
+[gateway]
+  antenna_gain=0
+  lorawan_public=true
+  region="US915"
+  model="rak_2287"
+  model_flags=[]
+  time_fallback_enabled=true
+
+  [gateway.concentrator]
+    multi_sf_channels=[903900000,904100000,904300000,904500000,904700000,904900000,905100000,905300000]
+
+    [gateway.concentrator.lora_std]
+      frequency=904600000
+      bandwidth=500000
+      spreading_factor=8
+
+    [gateway.concentrator.fsk]
+      frequency=0
+      bandwidth=0
+      datarate=0

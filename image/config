@@ -1,0 +1,18 @@
+# pi-gen build config for the buoy gateway image.
+# pi-gen is cloned at the pinned ref by CI (see .github/workflows/build-image.yml);
+# this file is copied to pi-gen/config.
+IMG_NAME=buoy-gateway
+RELEASE=bookworm
+DEPLOY_COMPRESSION=xz
+COMPRESSION_LEVEL=6
+TARGET_HOSTNAME=buoy-gateway
+FIRST_USER_NAME=buoy
+# Bench-only password build; Phase 2 flash.sh switches to pubkey-only SSH.
+FIRST_USER_PASS=buoy-bench-only
+DISABLE_FIRST_BOOT_USER_RENAME=1
+ENABLE_SSH=1
+LOCALE_DEFAULT=en_US.UTF-8
+KEYBOARD_KEYMAP=us
+KEYBOARD_LAYOUT="English (US)"
+TIMEZONE_DEFAULT=UTC
+STAGE_LIST="stage0 stage1 stage2 stage-buoy"

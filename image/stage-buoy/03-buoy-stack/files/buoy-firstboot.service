@@ -1,0 +1,12 @@
+[Unit]
+Description=Buoy gateway first-boot provisioning
+Wants=network-online.target
+After=network-online.target docker.service tailscaled.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/buoy-firstboot.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

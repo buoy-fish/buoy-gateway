@@ -1,0 +1,23 @@
+# buoy gateway runtime stack — canary channel.
+# Validated on hardware 2026-07-28 (Pi 4B + RAK2287, spike on the canary device).
+services:
+  concentratord:
+    image: ghcr.io/buoy-fish/gateway-concentratord:canary
+    restart: unless-stopped
+    # TODO: narrow to explicit devices (/dev/spidev0.0, /dev/gpiochip0)
+    privileged: true
+    volumes:
+      - ipc:/ipc
+      - /opt/buoy/config/concentratord.toml:/etc/concentratord/concentratord.toml:ro
+
+  mqtt-forwarder:
+    image: ghcr.io/buoy-fish/gateway-mqtt-forwarder:canary
+    restart: unless-stopped
+    volumes:
+      - ipc:/ipc
+      - /opt/buoy/config/chirpstack-mqtt-forwarder.toml:/etc/chirpstack-mqtt-forwarder/chirpstack-mqtt-forwarder.toml:ro
+
+  # gateway-agent: Phase 4 (heartbeats + tailnet log/status endpoint, TDD)
+
+volumes:
+  ipc:

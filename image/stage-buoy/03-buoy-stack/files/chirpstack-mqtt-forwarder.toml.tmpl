@@ -1,0 +1,26 @@
+# Template — rendered to chirpstack-mqtt-forwarder.toml by buoy-firstboot.sh
+# with the broker password from site.json. The generic image ships NO secrets.
+[logging]
+  level="INFO"
+  log_to_syslog=false
+
+[mqtt]
+  topic_prefix="us915_1"
+  json=false
+  server="tcp://hpr.buoy.fish:1883"
+  username="gateway"
+  password="__MQTT_PASSWORD__"
+  qos=0
+  clean_session=false
+
+[backend]
+  enabled="concentratord"
+
+  [backend.filters]
+    forward_crc_ok=true
+    forward_crc_invalid=false
+    forward_crc_missing=false
+
+  [backend.concentratord]
+    event_url="ipc:///ipc/concentratord_event"
+    command_url="ipc:///ipc/concentratord_command"
