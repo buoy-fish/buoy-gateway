@@ -20,10 +20,25 @@ DEVICE_NAME=$(jq -er '.device_name' "${SITE}")
 TS_AUTH_KEY=$(jq -er '.tailscale_auth_key' "${SITE}")
 MQTT_PASSWORD=$(jq -er '.mqtt_password' "${SITE}")
 
+# First boot races DHCP/NTP; the unit is oneshot and won't rerun until the next
+# power cycle, so network-dependent steps must retry here (~10 min ceiling each).
+retry() {
+	local attempt=1 max=40
+	until "$@"; do
+		if [ "${attempt}" -ge "${max}" ]; then
+			echo "buoy-firstboot: giving up after ${max} attempts: $1" >&2
+			return 1
+		fi
+		attempt=$((attempt + 1))
+		sleep 15
+	done
+}
+
 hostnamectl set-hostname "${DEVICE_NAME}"
 
-# Org practice: tailscale ssh on, MagicDNS off on machines.
-tailscale up \
+# Org practice: tailscale ssh on, MagicDNS off on machines. A key minted with
+# tags applies them automatically; no --advertise-tags needed.
+retry tailscale up \
 	--auth-key="${TS_AUTH_KEY}" \
 	--hostname="${DEVICE_NAME}" \
 	--ssh \
@@ -36,7 +51,7 @@ jq -rn --rawfile tmpl "${CONFIG_DIR}/chirpstack-mqtt-forwarder.toml.tmpl" \
 	> "${CONFIG_DIR}/chirpstack-mqtt-forwarder.toml"
 chmod 600 "${CONFIG_DIR}/chirpstack-mqtt-forwarder.toml"
 
-docker compose -f /opt/buoy/docker-compose.yml up -d
+retry docker compose -f /opt/buoy/docker-compose.yml up -d
 
 # TODO Phase 2: phone-home POST (device name, image version, tailscale IP) to
 # the heartbeat endpoint with retry-until-ack; then shred site.json secrets.
